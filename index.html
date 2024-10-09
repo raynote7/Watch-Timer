@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타이머 웹 앱</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #time {
+            width: 100px;
+            height: 30px;
+            font-size: 16px;
+            text-align: center;
+            margin-right: 5px;
+        }
+
+        .input-container span {
+            font-size: 16px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #start {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #stop {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #reset {
+            background-color: #008CBA;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #timer {
+            font-size: 36px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .blink {
+            animation: blink 0.5s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <h1>타이머 웹 앱</h1>
+    <div class="input-container">
+        <input type="number" id="time" value="60" placeholder="시간 입력 (초)">
+        <span>초</span>
+    </div>
+    <div class="button-container">
+        <button id="start">시작</button>
+        <button id="stop">종료</button>
+        <button id="reset">리셋</button>
+    </div>
+    <div id="timer"></div>
+
+    <script>
+        let timeInput = document.getElementById('time');
+        let startBtn = document.getElementById('start');
+        let stopBtn = document.getElementById('stop');
+        let resetBtn = document.getElementById('reset');
+        let timerDisplay = document.getElementById('timer');
+
+        let seconds;
+        let intervalId;
+        let running = false;
+
+        // 시간 형식 변환 함수 (시:분:초)
+        function formatTime(time) {
+            let hours = Math.floor(time / 3600);
+            let minutes = Math.floor((time % 3600) / 60);
+            let seconds = time % 60;
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // 화면에 시간 업데이트
+        function updateDisplay() {
+            timerDisplay.textContent = formatTime(seconds);
+        }
+
+        // 타이머 시작
+        function startTimer() {
+            if (!running) {
+                running = true;
+                intervalId = setInterval(function() {
+                    if (seconds > 0) {
+                        seconds--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(intervalId);
+                        running = false;
+                        timeInput.removeAttribute('readonly');
+                        document.body.classList.add('blink');
+                        setTimeout(() => {
+                            document.body.classList.remove('blink');
+                            alert("시간 종료!");
+                        }, 3000);
+                    }
+                }, 1000);
+                timeInput.setAttribute('readonly', 'readonly'); // 입력 잠금
+            }
+        }
+
+        // 타이머 중지
+        function stopTimer() {
+            if (running) {
+                clearInterval(intervalId);
+                running = false;
+                timeInput.removeAttribute('readonly'); // 입력 해제
+            }
+        }
+
+        // 타이머 리셋
+        function resetTimer() {
+            stopTimer();
+            seconds = parseInt(timeInput.value) || 0;
+            updateDisplay();
+        }
+
+        // 입력값 변경 시 타이머 시간 업데이트
+        function updateTimerFromInput() {
+            if (!running) {
+                seconds = parseInt(timeInput.value) || 0;
+                updateDisplay();
+            }
+        }
+
+        // 버튼 클릭 이벤트 리스너
+        startBtn.addEventListener('click', startTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        timeInput.addEventListener('input', updateTimerFromInput);
+
+        // 초기 타이머 설정
+        resetTimer();
+    </script>
+</body>
+</html>
