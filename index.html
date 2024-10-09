@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>타이머 웹 앱</title>
+    <title>Timer Watch</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -91,9 +91,9 @@
         <span>초</span>
     </div>
     <div class="button-container">
-        <button id="start">시작</button>
-        <button id="stop">종료</button>
-        <button id="reset">리셋</button>
+        <button id="start">Start</button>
+        <button id="stop">Finish</button>
+        <button id="reset">Reset</button>
     </div>
     <div id="timer"></div>
 
@@ -136,7 +136,7 @@
                         document.body.classList.add('blink');
                         setTimeout(() => {
                             document.body.classList.remove('blink');
-                            alert("시간 종료!");
+                            alert("Time out!");
                         }, 3000);
                     }
                 }, 1000);
